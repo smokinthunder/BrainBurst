@@ -1,7 +1,7 @@
 import 'package:brainburst/models/branch.dart';
-import 'package:brainburst/screens/index_page.dart';
+// import 'package:brainburst/screens/index_page.dart';
 import 'package:flutter/material.dart';
-// import 'package:brainburst/screens/welcome_page.dart';
+import 'package:brainburst/screens/welcome_page.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -29,8 +29,8 @@ class MyApp extends StatelessWidget {
             },
           ),
         ),
-        home: const IndexPage(),
-        // home: const WelcomePage(),
+        // home: const IndexPage(),
+        home: const WelcomePage(),
       ),
     );
   }

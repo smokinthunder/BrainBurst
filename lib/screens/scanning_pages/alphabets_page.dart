@@ -17,31 +17,41 @@ class AlphabetsPage extends StatelessWidget {
           colors: [Color(0xFFF7D5E5), Color(0x00FA99C8)],
         ),
       ),
-      child: const Column(
+      child: Column(
         children: [
-          ScanningPageLogo(),
-          // Container(
-          //   padding: const EdgeInsets.all(10),
-          //   margin: const EdgeInsets.all(10),
-          //   child: ListView(
-          //     // crossAxisCount: 1,
-          //     // mainAxisSpacing: 10,
-          //     // crossAxisSpacing: 10,
-          //     children: const [
-          //       // AlphabetBox('a'),
-          //       Text('data'),
-          //       Text('data'),
-          //       Text('data'),
-          //       Text('data'),
-          //       Text('data'),
-          //       Text('data'),
-          //       Text('data'),
-          //       Text('data'),
-          //       Text('data'),
-          //       Text('data'),
-          //     ],
-          //   ),
-          // )
+          const ScanningPageLogo(),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            height: 520,
+            width: 340,
+            child: GridView.count(
+              crossAxisCount: 3,
+              children: const [
+                AlphabetBox('അ'),
+                AlphabetBox('ആ'),
+                AlphabetBox('ഇ'),
+                AlphabetBox('ഈ'),
+                AlphabetBox('ഉ'),
+                AlphabetBox('ഊ'),
+                AlphabetBox('ഋ'),
+                AlphabetBox('എ'),
+                AlphabetBox('ഏ'),
+                AlphabetBox('ഐ'),
+                AlphabetBox('ഒ'),
+                AlphabetBox('ഓ'),
+                AlphabetBox('ഔ'),
+                AlphabetBox('അം'),
+                AlphabetBox('അഃ'),
+                AlphabetBox('ക'),
+                AlphabetBox('ഖ'),
+                AlphabetBox('ഗ'),
+                AlphabetBox('ഘ'),
+                AlphabetBox('ങ'),
+              ],
+            ),
+          )
         ],
       ),
     );
@@ -57,6 +67,7 @@ class AlphabetBox extends StatelessWidget {
     return Container(
       width: 94,
       height: 84,
+      margin: const EdgeInsets.all(20),
       decoration: ShapeDecoration(
         color: const Color(0xFFEBE8B1),
         shape: RoundedRectangleBorder(

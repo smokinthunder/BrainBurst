@@ -1,4 +1,5 @@
 import 'package:brainburst/screens/scanning_pages/alphabets_page.dart';
+import 'package:brainburst/screens/scanning_pages/camera_page.dart';
 import 'package:brainburst/screens/scanning_pages/recording_page.dart';
 import 'package:brainburst/screens/scanning_pages/uploading_page.dart';
 import 'package:brainburst/screens/video_page.dart';
@@ -17,6 +18,8 @@ class BranchProvider extends ChangeNotifier {
         return const UplaodingPage();
       case 4:
         return const AlphabetsPage();
+      case 5:
+        return const CameraPage();
       default:
         return const Text('Invalid branch index');
     }
