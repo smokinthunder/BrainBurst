@@ -17,32 +17,31 @@ class AlphabetsPage extends StatelessWidget {
           colors: [Color(0xFFF7D5E5), Color(0x00FA99C8)],
         ),
       ),
-      child: Column(
+      child: const Column(
         children: [
-          const ScanningPageLogo(),
-          Container(
-            padding: const EdgeInsets.all(10),
-            margin: const EdgeInsets.all(10),
-            child:
-            GridView.count(
-              crossAxisCount: 3,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              children: const [
-                // AlphabetBox('a'),
-                Text('data'),
-                Text('data'),
-                Text('data'),
-                Text('data'),
-                Text('data'),
-                Text('data'),
-                Text('data'),
-                Text('data'),
-                Text('data'),
-                Text('data'),
-              ],
-            ),
-          )
+          ScanningPageLogo(),
+          // Container(
+          //   padding: const EdgeInsets.all(10),
+          //   margin: const EdgeInsets.all(10),
+          //   child: ListView(
+          //     // crossAxisCount: 1,
+          //     // mainAxisSpacing: 10,
+          //     // crossAxisSpacing: 10,
+          //     children: const [
+          //       // AlphabetBox('a'),
+          //       Text('data'),
+          //       Text('data'),
+          //       Text('data'),
+          //       Text('data'),
+          //       Text('data'),
+          //       Text('data'),
+          //       Text('data'),
+          //       Text('data'),
+          //       Text('data'),
+          //       Text('data'),
+          //     ],
+          //   ),
+          // )
         ],
       ),
     );
@@ -50,8 +49,8 @@ class AlphabetsPage extends StatelessWidget {
 }
 
 class AlphabetBox extends StatelessWidget {
-  String data;
-  AlphabetBox(this.data, {super.key});
+  final String data;
+  const AlphabetBox(this.data, {super.key});
 
   @override
   Widget build(BuildContext context) {

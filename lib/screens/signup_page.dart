@@ -1,6 +1,4 @@
 import 'package:brainburst/screens/login_page.dart';
-import 'package:brainburst/screens/reward_pages/badge_earn.dart';
-import 'package:brainburst/screens/reward_pages/correct_excellent_page.dart';
 import 'package:brainburst/screens/reward_pages/try_again.dart';
 import 'package:flutter/material.dart';
 

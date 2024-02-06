@@ -1,6 +1,5 @@
 import 'package:brainburst/screens/scanning_pages/scanning_index.dart';
 import 'package:flutter/material.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class UplaodingPage extends StatelessWidget {
