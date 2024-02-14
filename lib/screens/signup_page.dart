@@ -1,15 +1,27 @@
+import 'package:brainburst/screens/index_page.dart';
 import 'package:brainburst/screens/login_page.dart';
-import 'package:brainburst/screens/reward_pages/try_again.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-class SignupPage extends StatelessWidget {
+class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
+
+  @override
+  State<SignupPage> createState() => _SignupPageState();
+}
+
+class _SignupPageState extends State<SignupPage> {
+  String username = '';
+  String email = '';
+  String password = '';
+  bool seePassword = true;
+  bool isValidEmail = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Color(0xFFFA99C8),
-
       body: SafeArea(
         child: SizedBox(
           width: 393,
@@ -63,6 +75,9 @@ class SignupPage extends StatelessWidget {
                             ),
                           ),
                           child: TextField(
+                            onChanged: (value) {
+                              username = value;
+                            },
                             decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.person),
                                 hintText: "Enter your username",
@@ -89,6 +104,13 @@ class SignupPage extends StatelessWidget {
                             ),
                           ),
                           child: TextField(
+                            onChanged: (value) {
+                              email = value;
+
+                              setState(() {
+                                isValidEmail = EmailValidator.validate(email);
+                              });
+                            },
                             decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.email),
                                 hintText: "Enter your Email",
@@ -103,6 +125,18 @@ class SignupPage extends StatelessWidget {
                                 border: InputBorder.none),
                           ),
                         ),
+                        isValidEmail
+                            ? Container()
+                            : const Padding(
+                                padding: EdgeInsets.only(left: 40),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.clear, color: Colors.red),
+                                    Text("Email is not valid",
+                                        style: TextStyle(color: Colors.red)),
+                                  ],
+                                ),
+                              ),
                         Container(
                           margin: const EdgeInsets.only(top: 20),
                           width: 344,
@@ -115,10 +149,18 @@ class SignupPage extends StatelessWidget {
                             ),
                           ),
                           child: TextField(
+                            onChanged: (value) {
+                              password = value;
+                            },
+                            obscureText: seePassword,
                             decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.lock_open),
                                 suffixIcon: IconButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      setState(() {
+                                        seePassword = !seePassword;
+                                      });
+                                    },
                                     icon: const Icon(Icons.remove_red_eye)),
                                 hintText: "Enter your password",
                                 hintStyle: TextStyle(
@@ -143,8 +185,25 @@ class SignupPage extends StatelessWidget {
                             ),
                           ),
                           child: MaterialButton(
-                            onPressed: () => {
-                              Navigator.push(context,MaterialPageRoute(builder: (context)=>const TryAgain()))  
+                            onPressed: () async  {
+                              await signUp({
+                                'username': username,
+                                'email': email,
+                                'password': password,
+                              });
+                              logIn({
+                                'username': username,
+                                'password': password
+                              }).then((value) {
+                                // print(value);
+                                if (value == 'logged in') {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: ((context) =>
+                                              const IndexPage())));
+                                } 
+                              });
                             },
                             child: const Padding(
                               padding: EdgeInsets.only(
@@ -216,5 +275,32 @@ class SignupPage extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+Future<String> signUp(Map<String, dynamic> data) async {
+  var url =
+      'http://192.168.29.218:8000/register'; // Include 'http://' or 'https://'
+  String body = json.encode(data);
+
+  try {
+    var response = await http.post(
+      Uri.parse(url), // Use Uri.parse to create the Uri
+      body: body,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      return jsonResponse['Message'];
+    } else {
+      // Handle other status codes (e.g., 404, 500, etc.) if needed
+      return 'Error: ${response.statusCode}';
+    }
+  } catch (e) {
+    // Handle exceptions (e.g., network errors)
+    return 'Error: $e';
   }
 }

@@ -1,15 +1,30 @@
+import 'dart:convert';
+
 import 'package:brainburst/screens/index_page.dart';
 import 'package:brainburst/screens/signup_page.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-class LoginPage extends StatelessWidget {
+// import 'package:django_rest_framework_client/django_rest_framework_client.dart';
+// import 'package:http/http.dart' as http;
+
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  // final DRFApi api = DRFApi('http://192.168.1.74:8000/login');
+
+  String username = '';
+  String password = '';
+  var seePassword = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Color(0xFFFA99C8),
-
       body: SafeArea(
         child: SizedBox(
           width: 393,
@@ -64,9 +79,12 @@ class LoginPage extends StatelessWidget {
                             ),
                           ),
                           child: TextField(
+                            onChanged: (value) {
+                              username = value;
+                            },
                             decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.person),
-                                hintText: "Enter your Email",
+                                hintText: "Enter your username",
                                 hintStyle: TextStyle(
                                   color: Colors.black
                                       .withOpacity(0.6499999761581421),
@@ -90,10 +108,18 @@ class LoginPage extends StatelessWidget {
                             ),
                           ),
                           child: TextField(
+                            onChanged: (value) {
+                              password = value;
+                            },
+                            obscureText: seePassword,
                             decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.lock_open),
                                 suffixIcon: IconButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      setState(() {
+                                        seePassword = !seePassword;
+                                      });
+                                    },
                                     icon: const Icon(Icons.remove_red_eye)),
                                 hintText: "Enter your password",
                                 hintStyle: TextStyle(
@@ -119,10 +145,31 @@ class LoginPage extends StatelessWidget {
                           ),
                           child: MaterialButton(
                             onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: ((context) => const IndexPage())));
+                              // Navigator.pushReplacement(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: ((context) =>
+                              //             const IndexPage())));
+                              logIn({
+                                'username': username,
+                                'password': password
+                              }).then((value) {
+                                // print(value);
+                                if (value == 'logged in') {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: ((context) =>
+                                              const IndexPage())));
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content:
+                                          Text("wrong username or password"),
+                                    ),
+                                  );
+                                }
+                              });
                             },
                             child: const Padding(
                               padding: EdgeInsets.only(
@@ -145,7 +192,8 @@ class LoginPage extends StatelessWidget {
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: ((context) => const SignupPage())));
+                                    builder: ((context) =>
+                                        const SignupPage())));
                           },
                           child: Text.rich(
                             TextSpan(
@@ -194,5 +242,37 @@ class LoginPage extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+Future<String> logIn(Map<String, dynamic> data) async {
+  var url =
+      'http://192.168.29.218:8000/login'; // Include 'http://' or 'https://'
+  String body = json.encode(data);
+
+  try {
+    var response = await http.post(
+      Uri.parse(url), // Use Uri.parse to create the Uri
+      body: body,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    // print(response);
+    print(body);
+
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      // print(jsonResponse['response']);
+      // print(response.body);
+ 
+      return jsonResponse['response'];
+    } else {
+      // Handle other status codes (e.g., 404, 500, etc.) if needed
+      return 'Error: ${response.statusCode}';
+    }
+  } catch (e) {
+    // Handle exceptions (e.g., network errors)
+    return 'Error: $e';
   }
 }

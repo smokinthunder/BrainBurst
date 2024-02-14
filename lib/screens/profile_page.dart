@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    fetchData();
     return Container(
       width: 393,
       height: 852,
@@ -95,26 +98,48 @@ class ProfilePage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(25),
               ),
             ),
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 20,right: 20),  
-                  child: Image.asset('assets/sign_out.png'),
-                ),
-                Text(
-                  'Sign out',
-                  style: GoogleFonts.inknutAntiqua(
-                    color: Colors.black,
-                    fontSize: 25,
-                    fontWeight: FontWeight.w600,
-                    height: 0,
+            child: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20,right: 20),  
+                    child: Image.asset('assets/sign_out.png'),
                   ),
-                ),
-              ],
+                  Text(
+                    'Sign out',
+                    style: GoogleFonts.inknutAntiqua(
+                      color: Colors.black,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w600,
+                      height: 0,
+                    ),
+                  ),
+                ],
+              ),
             ),
           )
         ],
       ),
     );
+  }
+}
+
+
+
+Future<void> fetchData() async {
+  final response = await http.get(Uri.parse('http://192.168.29.218:8000/welcome'));
+
+  if (response.statusCode == 200) {
+    // If the server returns a 200 OK response,
+    // then parse the JSON.
+    List<dynamic> data = jsonDecode(response.body);
+    print(data);
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load data');
   }
 }
