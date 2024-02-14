@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from django.contrib.auth import authenticate
+
 from django.contrib.auth import get_user_model
 User = get_user_model()
 class UserRegister(serializers.ModelSerializer):
@@ -16,3 +18,28 @@ class UserRegister(serializers.ModelSerializer):
         reg.set_password(password)
         reg.save()
         return reg
+class UserLogin(serializers.ModelSerializer):
+    # Define the fields that will be used for login
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+
+    def validate(self, data):
+        # Validate the username and password
+        username = data.get('username', None)
+        password = data.get('password', None)
+
+        if username is None or password is None:
+            raise serializers.ValidationError('Username and password are required')
+
+        # Try to authenticate the user
+        user = authenticate(username=username, password=password)
+
+        if user is None:
+            raise serializers.ValidationError('Invalid credentials')
+
+        # Return the validated data
+        return data
