@@ -31,6 +31,8 @@ class UserLogin(serializers.ModelSerializer):
         # Validate the username and password
         username = data.get('username', None)
         password = data.get('password', None)
+        # print(username)
+        # print(password) 
 
         if username is None or password is None:
             raise serializers.ValidationError('Username and password are required')
