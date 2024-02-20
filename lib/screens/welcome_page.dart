@@ -38,8 +38,10 @@ class WelcomePage extends StatelessWidget {
                 ),
                 child: MaterialButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: ((context) => const LoginPage())));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) => const LoginPage())));
                   },
                   child: const Text(
                     'Get Started',
@@ -60,3 +62,4 @@ class WelcomePage extends StatelessWidget {
     );
   }
 }
+

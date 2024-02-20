@@ -145,11 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           child: MaterialButton(
                             onPressed: () {
-                              // Navigator.pushReplacement(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: ((context) =>
-                              //             const IndexPage())));
+
                               logIn({
                                 'username': username,
                                 'password': password

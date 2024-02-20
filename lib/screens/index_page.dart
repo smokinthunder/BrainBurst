@@ -2,6 +2,7 @@ import 'package:brainburst/models/branch.dart';
 import 'package:brainburst/screens/gaming_page.dart';
 import 'package:brainburst/screens/learning_page.dart';
 import 'package:brainburst/screens/profile_page.dart';
+import 'package:brainburst/screens/scanning_pages/camera_page.dart';
 import 'package:brainburst/screens/scanning_pages/scanning_index.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,7 @@ class _IndexPageState extends State<IndexPage> {
 
   final List<Widget> _widgetOptions = <Widget>[
     const LearningPage(),
-    const ScanningIndex(),
+    const CameraPage(),
     const GamingPage(), 
     const ProfilePage(),
   ];

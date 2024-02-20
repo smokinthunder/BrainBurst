@@ -8,8 +8,10 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    fetchData();
+    
+    // fetchData();
     return Container(
+      
       width: 393,
       height: 852,
       decoration: ShapeDecoration(
