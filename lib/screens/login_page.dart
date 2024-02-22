@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:brainburst/constants/api.dart';
 import 'package:brainburst/screens/index_page.dart';
 import 'package:brainburst/screens/signup_page.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // final DRFApi api = DRFApi('http://192.168.1.74:8000/login');
+  // final DRFApi api = DRFApi('http://192.168.1.81:8000/',tokenPath: 'login/'); 
 
   String username = '';
   String password = '';
@@ -133,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                                 border: InputBorder.none),
                           ),
                         ),
-                        Container(
+                        Container( 
                           margin: const EdgeInsets.only(top: 40, bottom: 20),
                           width: 344,
                           height: 63,
@@ -143,8 +144,9 @@ class _LoginPageState extends State<LoginPage> {
                               borderRadius: BorderRadius.circular(50),
                             ),
                           ),
-                          child: MaterialButton(
+                          child: MaterialButton( 
                             onPressed: () {
+                              // print(api.login(username, password));
 
                               logIn({
                                 'username': username,
@@ -243,8 +245,9 @@ class _LoginPageState extends State<LoginPage> {
 
 Future<String> logIn(Map<String, dynamic> data) async {
   var url =
-      'http://192.168.29.218:8000/login'; // Include 'http://' or 'https://'
+      '${Api.baseUrl}login'; // Include 'http://' or 'https://'
   String body = json.encode(data);
+  // print(data); 
 
   try {
     var response = await http.post(
@@ -254,15 +257,18 @@ Future<String> logIn(Map<String, dynamic> data) async {
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
-    // print(response);
-    print(body);
+    // print(response.statusCode);  
+    // print(body);     
 
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       // print(jsonResponse['response']);
-      // print(response.body);
- 
-      return jsonResponse['response'];
+      // Api.token = jsonResponse['token'] ; 
+      Api().tokenchange(jsonResponse['token']);
+      print(Api.token);
+
+  auth();
+      return jsonResponse['response']; 
     } else {
       // Handle other status codes (e.g., 404, 500, etc.) if needed
       return 'Error: ${response.statusCode}';
@@ -272,3 +278,14 @@ Future<String> logIn(Map<String, dynamic> data) async {
     return 'Error: $e';
   }
 }
+
+void auth() async {
+    final url = Uri.parse("${Api.baseUrl}welcome");
+    final response = await http.get(url, headers: {'Authorization': 'Token ${Api.token}'});
+    print(response.body);
+    print("auth");
+    var a = jsonDecode(response.body);
+    Api().login (a['user']);  
+    // return response;
+  }
+ 

@@ -1,3 +1,5 @@
+import 'package:brainburst/constants/api.dart';
+import 'package:brainburst/screens/index_page.dart';
 import 'package:brainburst/screens/login_page.dart';
 import 'package:flutter/material.dart';
 
@@ -38,10 +40,12 @@ class WelcomePage extends StatelessWidget {
                 ),
                 child: MaterialButton(
                   onPressed: () {
+                    // checkLogin(); 
+                    // auth();
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: ((context) => const LoginPage())));
+                            builder: ((context) => Api.logedIn ? const IndexPage() : const LoginPage() )));
                   },
                   child: const Text(
                     'Get Started',

@@ -1,14 +1,17 @@
+import 'package:brainburst/constants/api.dart';
+import 'package:brainburst/screens/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ProfilePage extends StatelessWidget {
+  // final String? username;
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    
+    // Future<String> username = getUser();
     // fetchData();
     return Container(
       
@@ -38,9 +41,10 @@ class ProfilePage extends StatelessWidget {
             Icons.person,
             size: 150,
           ),
-          const Text(
-            'UserName',
-            style: TextStyle(
+          Text(
+            // Api.token,
+            "Username: ${Api.user}",
+            style: const TextStyle(
               color: Colors.black,
               fontSize: 20,
               fontFamily: 'Inter',
@@ -103,6 +107,7 @@ class ProfilePage extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 Navigator.pop(context);
+                Api().logout();
               },
               child: Row(
                 children: [

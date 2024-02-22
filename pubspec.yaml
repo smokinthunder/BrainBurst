@@ -19,7 +19,7 @@ dependencies:
   http: ^1.2.0
   email_validator: ^2.1.17
   django_rest_framework_client: ^0.0.5
-  camera: ^0.10.5+9
+  # camera: ^0.10.5+9
   # dotted_border: ^2.1.0
   # camera: ^0.10.5+9
   # realm: ^1.6.1

@@ -25,7 +25,7 @@ class ScanningIndex extends StatelessWidget {
           const ScanningPageLogo(),
           InkWell(
             onTap: () {
-              branchProvider.changeBranchIndex(3);
+              branchProvider.changeBranchIndex(5);
             },
             child: ScanningIndexTile(
               fontsizewid: 24,

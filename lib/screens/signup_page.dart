@@ -1,3 +1,4 @@
+import 'package:brainburst/constants/api.dart';
 import 'package:brainburst/screens/index_page.dart';
 import 'package:brainburst/screens/login_page.dart';
 import 'package:email_validator/email_validator.dart';
@@ -280,7 +281,7 @@ class _SignupPageState extends State<SignupPage> {
 
 Future<String> signUp(Map<String, dynamic> data) async {
   var url =
-      'http://192.168.29.218:8000/register'; // Include 'http://' or 'https://'
+      '${Api.baseUrl}register'; // Include 'http://' or 'https://'
   String body = json.encode(data);
 
   try {
@@ -290,7 +291,7 @@ Future<String> signUp(Map<String, dynamic> data) async {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-    );
+    ); 
 
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
