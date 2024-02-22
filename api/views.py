@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .serializers import UserRegister
+from .serializers import UserLogin, UserRegister
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -25,33 +25,33 @@ class register(APIView):
         return Response(data)
 
 
-# class login(APIView):
+class login(APIView):
 
-#     def post(self, request, format=None):
-#         serializer = UserLogin(data=request.data)
-#         data = {}
-#         # print("request")
-#         if serializer.is_valid():
-#             username = serializer.validated_data['username']
-#             password = serializer.validated_data['password']
-#             # print(username)
-#             user = authenticate(username=username, password=password)
-#             # print(user)
-#             if user is not None:
-#                 # print(user)
-#                 authlogin(request, user)
-#                 data['response'] = 'logged in'
-#                 data['username'] = user.username
-#                 data['email'] = user.email
-#                 # token = Token.objects.get_or_create(user=user).key
-#                 # data['token'] = token
-#                 # return render(request, 'index.html', data)
-#                 print(data)
-#             else:
-#                 data['response'] = 'invalid credentials'
-#         else:
-#             data = serializer.errors
-#         return Response(data)
+    def post(self, request, format=None):
+        serializer = UserLogin(data=request.data)
+        data = {}
+        # print("request")
+        if serializer.is_valid():
+            username = serializer.validated_data['username']
+            password = serializer.validated_data['password']
+            # print(username)
+            user = authenticate(username=username, password=password)
+            # print(user)
+            if user is not None:
+                # print(user)
+                authlogin(request, user)
+                data['response'] = 'logged in'
+                data['username'] = user.username
+                data['email'] = user.email
+                token = Token.objects.get(user=user).key
+                data['token'] = token
+                # return render(request, 'index.html', data)
+                print(data)
+            else:
+                data['response'] = 'invalid credentials'
+        else:
+            data = serializer.errors
+        return Response(data)
 
 
 class welcome(APIView):
@@ -59,3 +59,6 @@ class welcome(APIView):
     def get(self,request):
         content = {'user': str(request.user),  'userid' : str(request.user.id)}
         return Response(content)
+
+
+
