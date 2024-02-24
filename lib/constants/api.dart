@@ -1,9 +1,9 @@
 class Api {
-  static const String baseUrl = 'http://192.168.1.81:8000/';
+  static const String baseUrl = 'http://192.168.68.89:8000/';
   static var token = "";
   tokenchange(String newtoken) {
     token = newtoken;
-  }
+  }   
   static String user= "";
   static bool logedIn = false;
   login(String newuser) {

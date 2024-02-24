@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:video_player_with_controls/video_player_with_controls.dart';
 
 class VideoPage extends StatelessWidget {
   const VideoPage({super.key});
@@ -14,7 +15,6 @@ class VideoPage extends StatelessWidget {
       color: Colors.white,
       child: Stack(
         children: [
-          
           const Column(
             children: [
               Text(
@@ -32,15 +32,19 @@ class VideoPage extends StatelessWidget {
             ],
           ),
           Container(
-            margin: const EdgeInsets.only(top: 100),
+            margin: const EdgeInsets.only(top: 150),
             width: 394,
             height: 373,
-            decoration: ShapeDecoration( 
+            decoration: ShapeDecoration(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
               ),
             ),
-            child: Image.asset('assets/video_page/elephant.png'),
+            child: const VideoPlayerWithControls(
+              videoUrl:
+                  'https://drive.google.com/uc?export=download&id=1HI8xdvl281vIkfsGLc0pX22izSkQiu_A',
+                  
+            ),
           ),
         ],
       ),

@@ -283,6 +283,7 @@ Future<String> signUp(Map<String, dynamic> data) async {
   var url =
       '${Api.baseUrl}register'; // Include 'http://' or 'https://'
   String body = json.encode(data);
+  print(url); 
 
   try {
     var response = await http.post(
