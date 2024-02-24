@@ -5,7 +5,7 @@ from .serializers import UserLogin, UserRegister, VideoSerializer
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from django.contrib.auth import login as autologin, authenticate
+from django.contrib.auth import login as autologin, authenticate, get_user
 from django.core import serializers
 
 
