@@ -1,7 +1,13 @@
+import 'package:brainburst/constants/api.dart';
 import 'package:brainburst/models/branch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+String videoUrl = '';
+int videoIndex = 0;
 
 class LearningPage extends StatelessWidget {
   const LearningPage({super.key});
@@ -243,21 +249,43 @@ class _LearningPageContentState extends State<LearningPageContent> {
       ),
       child: ListView(
         children: [
-          const LearningPageContentTile(index: 1, played: true),
-          const LearningPageContentTile(index: 2, played: false),
-          const LearningPageContentTile(index: 3, played: false),
-          const LearningPageContentTile(index: 4, played: false),
-          InkWell(
-            onTap: () {
-              branchProvider.changeBranchIndex(1);
-            },
-            child:
-             const LearningPageContentTile(index: 5, played: false),
-          ),
-          const LearningPageContentTile(index: 6, played: false),
-          const LearningPageContentTile(index: 7, played: false),
+          for (int i = 0; i < 15; i++)
+            InkWell(
+              onTap: () {
+                fetchVideo().then((chapters) {
+                  // Use the list of video URLs here
+                  print(chapters[i]['link']);
+                  print(chapters[i]['id']);
+                  videoUrl = chapters[i]['link'];
+                  videoIndex = chapters[i]['id'];
+                  branchProvider.changeBranchIndex(1);
+                }).catchError((error) {
+                  // Handle error here
+                  print('Error fetching video URLs: $error');
+                });
+              },
+              child: LearningPageContentTile(index: i + 1, played: i < 2),
+            ),
         ],
+        
       ),
-    );
+    ); 
+  }
+}
+
+Future<List<Map<String, dynamic>>> fetchVideo() async {
+  String url = '${Api.baseUrl}videos';
+  final response = await http.get(Uri.parse(url));
+
+  if (response.statusCode == 200) {
+    final data = response.body;
+    List<Map<String, dynamic>> chapters =
+        json.decode(data).cast<Map<String, dynamic>>();
+
+    return chapters;
+  } else {
+    print('Request failed with status: ${response.statusCode}');
+    // You might want to throw an exception here or handle the error in some way
+    return []; // Return an empty list in case of failure
   }
 }

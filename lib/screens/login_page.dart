@@ -152,7 +152,7 @@ class _LoginPageState extends State<LoginPage> {
                               }).then((value) {
                                 // print(value);
                                 if (value == 'logged in') {
-                                  Navigator.pushReplacement(
+                                  Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: ((context) =>

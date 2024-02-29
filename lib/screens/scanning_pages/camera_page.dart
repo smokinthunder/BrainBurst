@@ -1,14 +1,24 @@
+// import 'dart:html';
+import 'dart:io';
+import 'package:brainburst/models/branch.dart';
+import 'package:brainburst/models/image_process.dart';
 import 'package:brainburst/screens/scanning_pages/scanning_index.dart';
 import 'package:flutter/material.dart';
-// import 'package:camera/camera.dart';
+import 'package:flutter_camera/flutter_camera.dart';
+import 'package:http/http.dart';
+import 'package:provider/provider.dart';
 
-
-class CameraPage extends StatelessWidget {
-  const CameraPage({super.key});
+class CameraPage extends StatefulWidget {
+  const CameraPage({Key? key}) : super(key: key);
 
   @override
+  _CameraPageState createState() => _CameraPageState();
+}
+
+class _CameraPageState extends State<CameraPage> {
+  @override
   Widget build(BuildContext context) {
-    // final branchProvider = context.watch<BranchProvider>();
+    final branchProvider = context.watch<BranchProvider>();
 
     return Container(
       height: 852,
@@ -20,67 +30,55 @@ class CameraPage extends StatelessWidget {
           colors: [Color(0xFFF7D5E5), Color(0x00FA99C8)],
         ),
       ),
-      child:  const Column(children: [
-        ScanningPageLogo(),
-        // Container(
-        //   height: 400,
-        //   width: 320,
-        //   color: Colors.grey,
-        // )
-        // CameraWidget(),
-      ]),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const ScanningPageLogo(),
+           Padding(
+            padding: const EdgeInsets.only(bottom: 400),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CameraPreview()));
+              },
+              child: const Text('Click here to take a picture'),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
+class CameraPreview extends StatelessWidget {
+  const CameraPreview({super.key});
 
-// class CameraWidget extends StatefulWidget {
-//   @override
-//   _CameraWidgetState createState() => _CameraWidgetState();
-// }
-
-// class _CameraWidgetState extends State<CameraWidget> {
-//   CameraController? controller;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     initCamera();
-//   }
-
-//   Future<void> initCamera() async {
-//     final cameras = await availableCameras();
-//     if (cameras.isNotEmpty) {
-//       controller = CameraController(cameras[0], ResolutionPreset.medium);
-//       controller!.initialize().then((_) {
-//         if (!mounted) {
-//           return;
-//         }
-//         setState(() {});
-//       });
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     if (controller == null || !controller!.value.isInitialized) {
-//       return Container(
-//         width: 320,
-//         height: 400,
-//         color: Colors.grey,
-//       );
-//     } else {
-//       return SizedBox(
-//         width: 320,
-//         height: 400,
-//         child: CameraPreview(controller!),
-//       );
-//     }
-//   }
-
-//   @override
-//   void dispose() {
-//     controller?.dispose();
-//     super.dispose();
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: FlutterCamera(
+        color: Colors.amber,
+        onImageCaptured: (value) {
+          final path = value.path;
+          print("::::::::::::::::::::::::::::::::: $path");
+          if (path.contains('.jpg')) {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    content: Column(
+                      children: [
+                        Image.file(File(path)),
+                         Text(ImageProcess().imageProcess(path) as String),
+                      ],
+                    ),
+                  );
+                });
+          }
+        },
+      ),
+    );
+  }
+}

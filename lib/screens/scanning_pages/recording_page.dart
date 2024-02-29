@@ -1,5 +1,6 @@
 import 'package:brainburst/screens/scanning_pages/scanning_index.dart';
 import 'package:flutter/material.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class RecordingPage extends StatefulWidget {
   const RecordingPage({super.key});
@@ -10,6 +11,9 @@ class RecordingPage extends StatefulWidget {
 
 class _RecordingPageState extends State<RecordingPage> {
   bool showText = true;
+  stt.SpeechToText _speech = stt.SpeechToText();
+  bool _isListening = false;
+  String _text = '';
 
   @override
   Widget build(BuildContext context) {
@@ -27,29 +31,53 @@ class _RecordingPageState extends State<RecordingPage> {
         children: [
           const ScanningPageLogo(),
           Padding(
-            padding: const EdgeInsets.only(top: 150,bottom: 100),
+            padding: const EdgeInsets.only(top: 150, bottom: 100),
             child: MaterialButton(
-                onPressed: () {
-                  setState(() { 
-                    showText = !showText;
-                  });
-                },
+                onPressed: _listen,
                 child: Image.asset('assets/recording_page/recording_logo.png')),
           ),
-          showText
-              ? const Text(
-                  '   മലയാളം',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 48,
-                    fontFamily: 'Marko One',
-                    fontWeight: FontWeight.w400,
-                    height: 0,
-                  ),
-                )
-              : Container()
+          Text(_isListening ? 'Listening...' : 'Start Listening'),
+          Text(
+            _text,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 48,
+              fontFamily: 'Marko One',
+              fontWeight: FontWeight.w400,
+              height: 0,
+            ),
+          )
         ],
       ),
     );
+  }
+
+  void _listen() async {
+    if (!_isListening) {
+      print('listening');
+      bool available = await _speech.initialize(
+        onStatus: (status) => print('onStatus: $status'),
+        onError: (error) => print('onError: $error'),
+      );
+
+      if (available) {
+        print('available');
+        setState(() => _isListening = true);
+        _speech.listen(
+          onResult: (result) => setState(() => _text = result.recognizedWords),
+          localeId: 'ml_IN', // Malayalam (India)
+        );
+      }
+    } else {
+      print('not listening');
+      setState(() => _isListening = false);
+      _speech.stop();
+    }
+  }
+
+  @override
+  void dispose() {
+    _speech.stop();
+    super.dispose();
   }
 }

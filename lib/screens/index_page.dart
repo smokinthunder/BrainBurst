@@ -20,7 +20,7 @@ class _IndexPageState extends State<IndexPage> {
 
   final List<Widget> _widgetOptions = <Widget>[
     const LearningPage(),
-    const ScanningIndex(),
+    const ScanningIndex(), 
     const GamingPage(), 
     const ProfilePage(),
   ];

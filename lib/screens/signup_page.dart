@@ -198,7 +198,7 @@ class _SignupPageState extends State<SignupPage> {
                               }).then((value) {
                                 // print(value);
                                 if (value == 'logged in') {
-                                  Navigator.pushReplacement(
+                                  Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: ((context) =>

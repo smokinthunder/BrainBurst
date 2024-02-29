@@ -21,6 +21,11 @@ dependencies:
   django_rest_framework_client: ^0.0.5
   video_player: ^2.8.2
   video_player_with_controls: ^0.0.4
+  camera: ^0.10.5+9
+  image_picker: ^1.0.7
+  flutter_camera: ^1.0.0
+  google_generative_ai: ^0.2.2
+  speech_to_text: ^6.6.1
   # camera: ^0.10.5+9
   # dotted_border: ^2.1.0
   # camera: ^0.10.5+9

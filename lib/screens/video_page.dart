@@ -1,12 +1,20 @@
+import 'package:brainburst/models/branch.dart';
+import 'package:brainburst/screens/learning_page.dart';
+import 'package:brainburst/screens/reward_pages/badge_earn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player_with_controls/video_player_with_controls.dart';
 
 class VideoPage extends StatelessWidget {
-  const VideoPage({super.key});
+  int index;
+  String videoUrl;
+  VideoPage({super.key, required this.index, required this.videoUrl});
 
   @override
   Widget build(BuildContext context) {
+    final branchProvider = context.watch<BranchProvider>();
+
     return Container(
       // padding: const EdgeInsets.all(20),
       margin: const EdgeInsets.only(top: 30),
@@ -15,11 +23,11 @@ class VideoPage extends StatelessWidget {
       color: Colors.white,
       child: Stack(
         children: [
-          const Column(
+          Column(
             children: [
               Text(
-                'പാഠം-5',
-                style: TextStyle(
+                'പാഠം-$index',
+                style: const TextStyle(
                   color: Color(0xFFA10A77),
                   fontSize: 48,
                   fontFamily: 'Marcellus',
@@ -28,22 +36,21 @@ class VideoPage extends StatelessWidget {
                   letterSpacing: 0.48,
                 ),
               ),
-              Image(image: Svg('assets/video_page/circle.svg'))
+              const Image(image: Svg('assets/video_page/circle.svg')),
+              // Text(videoUrl),
             ],
           ),
           Container(
             margin: const EdgeInsets.only(top: 150),
             width: 394,
-            height: 373,
+            height: 200,
             decoration: ShapeDecoration(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
               ),
             ),
-            child: const VideoPlayerWithControls(
-              videoUrl:
-                  'https://drive.google.com/uc?export=download&id=1HI8xdvl281vIkfsGLc0pX22izSkQiu_A',
-                  
+            child: VideoPlayerWithControls(
+              videoUrl: videoUrl,
             ),
           ),
         ],
