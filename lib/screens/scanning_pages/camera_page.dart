@@ -1,12 +1,11 @@
 // import 'dart:html';
 import 'dart:io';
-import 'package:brainburst/models/branch.dart';
 import 'package:brainburst/models/image_process.dart';
 import 'package:brainburst/screens/scanning_pages/scanning_index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_camera/flutter_camera.dart';
-import 'package:http/http.dart';
-import 'package:provider/provider.dart';
+import 'package:translator/translator.dart';
+
 
 class CameraPage extends StatefulWidget {
   const CameraPage({Key? key}) : super(key: key);
@@ -18,7 +17,6 @@ class CameraPage extends StatefulWidget {
 class _CameraPageState extends State<CameraPage> {
   @override
   Widget build(BuildContext context) {
-    final branchProvider = context.watch<BranchProvider>();
 
     return Container(
       height: 852,
@@ -34,7 +32,7 @@ class _CameraPageState extends State<CameraPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const ScanningPageLogo(),
-           Padding(
+          Padding(
             padding: const EdgeInsets.only(bottom: 400),
             child: InkWell(
               onTap: () {
@@ -52,28 +50,51 @@ class _CameraPageState extends State<CameraPage> {
   }
 }
 
+String objectName = '';
+String objectNameInMalayalam = '';
+
+
 class CameraPreview extends StatelessWidget {
-  const CameraPreview({super.key});
+  const CameraPreview({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FlutterCamera(
         color: Colors.amber,
-        onImageCaptured: (value) {
+        onImageCaptured: (value) async {
           final path = value.path;
           print("::::::::::::::::::::::::::::::::: $path");
           if (path.contains('.jpg')) {
             showDialog(
                 context: context,
                 builder: (context) {
-                  return AlertDialog(
-                    content: Column(
-                      children: [
-                        Image.file(File(path)),
-                         Text(ImageProcess().imageProcess(path) as String),
-                      ],
-                    ),
+                  return FutureBuilder<String?>(
+                    future: ImageProcess().imageProcess(path),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        final result =
+                            snapshot.data ?? ''; // Using null-aware operator
+                        objectName =result ;
+                        translateToMalayalam();
+                        return AlertDialog(
+                          content: Column(
+                            children: [
+                          Image.file(File(path)),
+                              Text("In English$result"),
+                              // Text(objectName ),
+                              Text("In Malayalam $objectNameInMalayalam" ),
+                              
+                            ],
+                          ),
+                        );
+                      }
+                    },
                   );
                 });
           }
@@ -82,3 +103,16 @@ class CameraPreview extends StatelessWidget {
     );
   }
 }
+
+void translateToMalayalam() async {
+  final translator = GoogleTranslator();
+
+  try {
+    Translation translation = await translator.translate(objectName, from: 'en', to: 'ml');
+    objectNameInMalayalam = translation.text;
+  } catch (error) {
+    print("Translation Error: $error");
+    objectNameInMalayalam =  "Translation Error";
+  }
+}
+

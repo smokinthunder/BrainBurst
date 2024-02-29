@@ -1,13 +1,31 @@
+import 'dart:io';
+
 import 'package:brainburst/screens/scanning_pages/scanning_index.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 
-class UplaodingPage extends StatelessWidget {
+class UplaodingPage extends StatefulWidget {
   const UplaodingPage({super.key});
 
   @override
+  State<UplaodingPage> createState() => _UplaodingPageState();
+}
+
+class _UplaodingPageState extends State<UplaodingPage> {
+  @override
   Widget build(BuildContext context) {
     // final branchProvider = context.watch<BranchProvider>();
+    File? _imageFile;
+    Future<void> _getImage() async {
+      final pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _imageFile = File(pickedFile.path);
+        });
+      }
+    }
 
     return Container(
       height: 852,
@@ -42,22 +60,25 @@ class UplaodingPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
-                  decoration: ShapeDecoration(
-                    color: const Color(0x191A524E),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                  ),
+                InkWell(
+                  onTap: _getImage,
                   child: Container(
-                    width: 20,
-                    height: 20,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: const BoxDecoration(),
-                    child: const Icon(Icons.upload,
-                        color: Color.fromARGB(255, 151, 150, 150)),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
+                    decoration: ShapeDecoration(
+                      color: const Color(0x191A524E),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: const BoxDecoration(),
+                      child: const Icon(Icons.upload,
+                          color: Color.fromARGB(255, 151, 150, 150)),
+                    ),
                   ),
                 ),
                 Container(
@@ -104,14 +125,22 @@ class UplaodingPage extends StatelessWidget {
             ),
             child: Stack(
               children: [
-                Image.asset('assets/scanning_page/ee1.png'),
+                _imageFile != null ? Image.file(_imageFile!) : Container(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Container(
-                      margin: const EdgeInsets.all(5),
-                      decoration: const ShapeDecoration(color: Colors.red,shape: CircleBorder()),
-                      child: const Icon(Icons.close,color: Colors.white),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          _imageFile = null;
+                        });
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.all(5),
+                        decoration: const ShapeDecoration(
+                            color: Colors.red, shape: CircleBorder()),
+                        child: const Icon(Icons.close, color: Colors.white),
+                      ),
                     ),
                   ],
                 )

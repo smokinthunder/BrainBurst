@@ -1,8 +1,11 @@
+
+
+/*
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
-import 'package:google_translator/google_translator.dart';
+// import 'package:google_translator/google_translator.dart';
 
 class ImageRecognitionPage extends StatefulWidget {
   @override
@@ -16,7 +19,7 @@ class _ImageRecognitionPageState extends State<ImageRecognitionPage> {
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _getImage(ImageSource source) async {
-    final pickedFile = await _picker.getImage(source: source);
+    final pickedFile = await _picker.pickImage(source: source);
 
     if (pickedFile != null) {
       setState(() {
@@ -34,9 +37,9 @@ class _ImageRecognitionPageState extends State<ImageRecognitionPage> {
     final List<ImageLabel> labels = await labeler.processImage(visionImage);
 
     for (ImageLabel label in labels) {
-      String translatedLabel = await GoogleTranslator.translate(label.text, from: 'en', to: 'ml');
+      // String translatedLabel = await GoogleTranslator.translate(label.text, from: 'en', to: 'ml');
       setState(() {
-        _recognizedObject = translatedLabel;
+        // _recognizedObject = translatedLabel;
       });
       break; // Only translate the first label
     }
@@ -48,7 +51,7 @@ class _ImageRecognitionPageState extends State<ImageRecognitionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Image Recognition'),
+        title: const Text('Image Recognition'),
       ),
       body: Center(
         child: Column(
@@ -56,8 +59,8 @@ class _ImageRecognitionPageState extends State<ImageRecognitionPage> {
           children: <Widget>[
             _image != null
                 ? Image.file(_image!)
-                : Text('No image selected'),
-            SizedBox(height: 20),
+                : const Text('No image selected'),
+            const SizedBox(height: 20),
             Text('Recognized Object: $_recognizedObject'),
           ],
         ),
@@ -68,16 +71,17 @@ class _ImageRecognitionPageState extends State<ImageRecognitionPage> {
           FloatingActionButton(
             onPressed: () => _getImage(ImageSource.gallery),
             tooltip: 'Pick Image',
-            child: Icon(Icons.photo_library),
+            child: const Icon(Icons.photo_library),
           ),
-          SizedBox(width: 20),
+          const SizedBox(width: 20),
           FloatingActionButton(
             onPressed: () => _getImage(ImageSource.camera),
             tooltip: 'Take Picture',
-            child: Icon(Icons.camera_alt),
+            child: const Icon(Icons.camera_alt),
           ),
         ],
       ),
     );
   }
 }
+*/

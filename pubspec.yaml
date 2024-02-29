@@ -26,6 +26,9 @@ dependencies:
   flutter_camera: ^1.0.0
   google_generative_ai: ^0.2.2
   speech_to_text: ^6.6.1
+  translator: ^1.0.0
+  # firebase_ml_vision: ^0.12.0+3
+  # google_translator: ^1.0.0
   # camera: ^0.10.5+9
   # dotted_border: ^2.1.0
   # camera: ^0.10.5+9
