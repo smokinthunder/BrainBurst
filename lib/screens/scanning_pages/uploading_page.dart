@@ -1,32 +1,64 @@
 import 'dart:io';
-
-import 'package:brainburst/screens/scanning_pages/scanning_index.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/widgets.dart';
+import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UplaodingPage extends StatefulWidget {
-  const UplaodingPage({super.key});
+  const UplaodingPage({Key? key}) : super(key: key);
 
   @override
   State<UplaodingPage> createState() => _UplaodingPageState();
 }
 
 class _UplaodingPageState extends State<UplaodingPage> {
-  @override
-  Widget build(BuildContext context) {
-    // final branchProvider = context.watch<BranchProvider>();
-    File? _imageFile;
-    Future<void> _getImage() async {
-      final pickedFile =
-          await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (pickedFile != null) {
-        setState(() {
-          _imageFile = File(pickedFile.path);
-        });
+  String recognizedTextOut = '';
+  File? imageFile;
+  TextRecognizer _textDetector = GoogleMlKit.vision.textRecognizer();
+
+  Future<void> _getImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        imageFile = File(pickedFile.path);
+      });
+      // Perform text recognition when the image is selected
+      await _recognizeText();
+    }
+  }
+
+  Future<void> _recognizeText() async {
+    if (imageFile == null) return;
+
+    final inputImage = InputImage.fromFile(imageFile!);
+    final textRecognizer = GoogleMlKit.vision.textRecognizer();
+    final text = await textRecognizer.processImage(inputImage);
+
+    String recognizedText = '';
+
+    for (TextBlock block in text.blocks) {
+      for (TextLine line in block.lines) {
+        // Check if the line contains Malayalam characters
+        if (line.text.contains(RegExp(r'[ം-ൿ]'))) {
+          recognizedText += line.text + '\n';
+        }
+        // recognizedText += line.text + '\n';
       }
     }
 
+    // Handle the recognized text here, you can update the UI with the text
+    print("Recognized Text: $recognizedText");
+    setState(() {
+      recognizedTextOut = recognizedText;
+    });
+
+    // Clean up resources
+    textRecognizer.close();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       height: 852,
       width: 393,
@@ -39,7 +71,6 @@ class _UplaodingPageState extends State<UplaodingPage> {
       ),
       child: Column(
         children: [
-          const ScanningPageLogo(),
           Container(
             width: 358,
             height: 252,
@@ -63,36 +94,30 @@ class _UplaodingPageState extends State<UplaodingPage> {
                 InkWell(
                   onTap: _getImage,
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 36, vertical: 16),
                     decoration: ShapeDecoration(
                       color: const Color(0x191A524E),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
                     ),
-                    child: Container(
-                      width: 20,
-                      height: 20,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: const BoxDecoration(),
-                      child: const Icon(Icons.upload,
-                          color: Color.fromARGB(255, 151, 150, 150)),
-                    ),
+                    child: const Icon(Icons.upload,
+                        color: Color.fromARGB(255, 151, 150, 150)),
                   ),
                 ),
                 Container(
                   width: double.infinity,
                   height: 52,
                   padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 40),
+                  child: const Padding(
+                    padding: EdgeInsets.only(left: 40),
                     child: Row(
                       children: [
                         Text(
                           'Click here',
-                          style: GoogleFonts.inter(
-                            color: const Color(0xFF136DC7),
+                          style: TextStyle(
+                            color: Color(0xFF136DC7),
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
                             height: 0.12,
@@ -100,8 +125,8 @@ class _UplaodingPageState extends State<UplaodingPage> {
                         ),
                         Text(
                           ' to upload the അക്ഷരം',
-                          style: GoogleFonts.inter(
-                            color: const Color(0xFF1A524E),
+                          style: TextStyle(
+                            color: Color(0xFF1A524E),
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
                             height: 0.12,
@@ -125,14 +150,17 @@ class _UplaodingPageState extends State<UplaodingPage> {
             ),
             child: Stack(
               children: [
-                _imageFile != null ? Image.file(_imageFile!) : Container(),
+                if (imageFile == null)
+                  Image.asset('assets/scanning_page/ee1.png')
+                else
+                  Image.file(imageFile!),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     InkWell(
                       onTap: () {
                         setState(() {
-                          _imageFile = null;
+                          imageFile = null;
                         });
                       },
                       child: Container(
@@ -146,9 +174,29 @@ class _UplaodingPageState extends State<UplaodingPage> {
                 )
               ],
             ),
+          ),
+          const SizedBox(height: 30),
+          SizedBox(
+            height: 100,
+            child: Text(
+              'Recognized Text:\n$recognizedTextOut',
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+              ),
+              // softWrap:
+              //     true,
+              // overflow: TextOverflow.clip,
+            ),
           )
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _textDetector.close();
+    super.dispose();
   }
 }
